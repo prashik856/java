@@ -1,8 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="2d75af0b-8060-4a7d-82e0-646a72844163" name="Default Changelist" comment="" />
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <list default="true" id="2d75af0b-8060-4a7d-82e0-646a72844163" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/test.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/desktop/Robot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/desktop/Robot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/kingdom/Insect.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/kingdom/Insect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/main/MyClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/main/MyClass.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/threads/Loader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/threads/Loader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/threads/LoaderRunnalbe.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/threads/LoaderRunnalbe.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/desktop/Robot$Brain.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/desktop/Robot$Brain.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/kingdom/Insect.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/kingdom/Insect.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/main/MyClass$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/main/MyClass$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/main/MyClass$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/main/MyClass$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/main/MyClass.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/main/MyClass.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/threads/Loader.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/threads/Loader.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/threads/LoaderRunnalbe.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/threads/LoaderRunnalbe.class" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -12,26 +31,39 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Enum" />
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
   </component>
+  <component name="GOROOT" url="file:///usr/local/go" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectId" id="1btyoWdULOMN3sGagyXu8pR6ZXs" />
-  <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.go.format.on.save.advertiser.fired": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "go.import.settings.migrated": "true",
+    "go.sdk.automatically.set": "true",
+    "last_opened_file_path": "/Users/prraut/Documents/Github/java/test",
+    "nodejs_package_manager_path": "npm"
+  }
+}]]></component>
   <component name="RunManager">
     <configuration name="MyClass" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="main.MyClass" />
@@ -46,6 +78,7 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -56,7 +89,25 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1589465859711</updated>
+      <workItem from="1666095046301" duration="5501000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VgoProject">
+    <settings-migrated>true</settings-migrated>
   </component>
 </project>

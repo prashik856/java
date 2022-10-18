@@ -1,5 +1,6 @@
 package main;
 
+import lambda.Lambda;
 import samples.Animal;
 import samples.Counter;
 import samples.Dog;
@@ -11,8 +12,8 @@ import kingdom.Name;
 
 import samples.Rank;
 
-import threads.Loader;
-import threads.LoaderRunnalbe;
+import threads.RunThreads;
+import threads.YoutubeThreads;
 
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -62,11 +63,7 @@ class MyClass {
         }
     }
 
-    //Entry point
-    //static: method can be run without creating an instance of the class containing the main method.
-    // void test() -> Doesn't return anything.
-    // Input parameters is the array of string called args
-    public static void main(String[ ] args){
+    private void learning() {
         //System is a class here.
         System.out.println("Hello World.");
         System.out.println("Revision of java yo");
@@ -79,7 +76,7 @@ class MyClass {
          * This is a documnetation comment.
          */
 
-         //Variables
+        //Variables
          /*
             short
             int
@@ -96,7 +93,6 @@ class MyClass {
         char group = 'A';
         boolean isTrue = true;
         int a=1, b=2, c=3;
-
 
         //Operators
         // Value used in either side of an operator is called an operand
@@ -132,7 +128,6 @@ class MyClass {
         int  num1 = 4, num2 = 5;
         num2 += num1; //num2 = num2 + num1
 
-
         //Strings
         String s = "Heelo";
 
@@ -160,16 +155,16 @@ class MyClass {
          * Read a word - next()
          */
 
-         //Decision Making.
-         /**
-          * Comparative operators
-          <
-          >
-          !=
-          ==
-          <=
-          >=
-          */
+        //Decision Making.
+        /**
+         * Comparative operators
+         <
+         >
+         !=
+         ==
+         <=
+         >=
+         */
         x=7;
         if(x==7){
             System.out.println("Value of x is seven");
@@ -211,12 +206,11 @@ class MyClass {
             case 2:
                 System.out.println("Tuesday");
                 break;
-            
+
             default:
                 System.out.println("Default Statement");
-            //Since default is last statement, no need for break
+                //Since default is last statement, no need for break
         }
-
 
         //while loops
         x=10;
@@ -281,7 +275,6 @@ class MyClass {
         System.out.println(arr5[0][0]);
 
         int[][] arr6 = new int[10][10];
-
 
         //OOPS
         // Each object has three dimensions: identity, attributes and behavior.
@@ -377,35 +370,44 @@ class MyClass {
         //Methods and classes can also be marked final.
         // This restricts the method so that they can't be overridden and classes so that they can't be subclassed.
 
-
         //Packages
         //used to avoid name conflicts and to control access to classes.
         // group made up of similar types of classes, along with sub-classes.
 
-        //Encapsulation
+        //Encapsulation, Inheritance, Polymorphism, Abstraction
         //4 core concepts in OOP.
         /**
-         * Encapsulation - implimentation details are not visible to users. Variables of one class will be hidden from other class, accessibel only through the methods of the current class. This is called data hiding.
-         * To acheive this, we declare class variables as private, and declare getter and setter variables for them.
+         * Encapsulation - implimentation details are not visible to users.
+         Variables of one class will be hidden from other class, accessibel only through the methods of
+         the current class. This is called data hiding.
+         * To acheive this, we declare class variables as private,
+         and declare getter and setter variables for them.
          * It controls the way data is accessed or modified
          * More flexible and easily changed code
          * Ability to change one part of the code without affecting other parts
          *
-         * Inheritance - Process that enables one class to acquire the properties of another. This way the information is placed in more manageable, hierarchical order.
+         * Inheritance - Process that enables one class to acquire the properties of another.
+         This way the information is placed in more manageable, hierarchical order.
          * Class inheriting the properties of another is the subclass [derived class or child class.].
          * The class whose properties are inheirted is the superclass[base class or parent class]
          * class Dog extends Animal {some code}
-         * When one class is inherited from another class, it inherits all the superclass' non-private variables and methods.
+         * When one class is inherited from another class, it inherits all the superclass'
+         non-private variables and methods.
          * Constructors are not member methods, and so are not inherited by subclasses.
          * The constructor of the superclass is called when the subclass is instantiated.
          * We can access the superclass from the subclass using the super keyword.
          * For e.g., super.var accesses the var member of the superclass
          *
-         * Polymorphism- refers to the idea of "having many forms" occurs when there is hierarchy of classes related to each other through inheritance.
-         * A call to a member method will cause a different implementation to be executed depending on the type of object invoking the method.
-         * E.g. Make Dog and Cat class which inherit the same Animal class,Each has it's own implementation of the makeSound() method.
+         *
+         * Polymorphism- refers to the idea of "having many forms" occurs when there is hierarchy of
+         classes related to each other through inheritance.
+         * A call to a member method will cause a different implementation to be executed
+         depending on the type of object invoking the method.
+         * E.g. Make Dog and Cat class which inherit the same Animal class,
+         Each has it's own implementation of the makeSound() method.
          * Since reference contains the dog object, the method makeSound() of the Dog class will be called.
          *Simple, polymorphism is one method with different implementation.
+         *
          *
          * Method Overriding: a subclass can define a behavior that's specific to the subclass type.
          * i.e. a subclass can implement a parent class method based on its requirement.
@@ -417,11 +419,14 @@ class MyClass {
          * - Constructors cannot be overridden.
          * Method overriding is also known as runtime polymorphism.
          *
+
          * Method overloading: Method has same name, but different parameters
          * Very useful when we need same method functionality for different types of parameters.
          * Method overrloading is also known as compile-time polymorphism.
+
          *
-         * Abstraction: Data abstraction provides the outside world only essential information, in a process of representing essential features without including implementation details.
+         * Abstraction: Data abstraction provides the outside world only essential information,
+         in a process of representing essential features without including implementation details.
          * We focus on essential qualities, rather than the specific characteristics of the particular example.
          * This is achieved using 'abstract' classes and 'interfaces'.
          * Abstract class is defined using the 'abstract' keyword.
@@ -431,12 +436,13 @@ class MyClass {
          * An abstract method is a method that is declared wihtout an implementation
          * e.g. abstract void walk();
          *
-         * Interface- is a completely abstract class that contains ONLY ABSTRACT METHODS (NO ATTRIBUTES).
+         * Interface - is a completely abstract class that contains ONLY ABSTRACT METHODS (NO ATTRIBUTES).
          * - Defined using interface keyword.
          * - May contain only static final variables
          * - Cannot contain constructor because interfaces cannot be instantiated.
          * - A class can implement any number of interfaces
-         * - An interface is implicitly abstract. You do not need to use the abstract keyword while declaring an interface.
+         * - An interface is implicitly abstract. You do not need to use the
+         abstract keyword while declaring an interface.
          * - Each method in an interface is also implicitly abstract, so the abstract keyword is not needed.
          * - Methods in interface are implicityly public.
          * - A class can inherit from just one superclass, but can implement multiple interfaces.
@@ -479,6 +485,7 @@ class MyClass {
         //Upcasting
         //You can cast an instance of a subclass to it's superclass
         Animal a3 = new Cat();
+        // This will call cat makeSound()
         // Upcasting is automatic
 
         //Downcasting
@@ -486,16 +493,22 @@ class MyClass {
         Animal a4 = new Cat();
         ((Animal)a4).makeSound();
         a4.makeSound();
+        // This will call Animal makeSound()
 
-        //Why is upcasting automatic, downcasting manual? Well, upcasting can never fail. But if you have a group of different Animals and want to downcast
-        // Them all to a Cat, then there's a chance that some of these Animal are actually Dogs, so the process fails.
+        //Why is upcasting automatic, downcasting manual?
+        // Well, upcasting can never fail. But if you have a group of different Animals and want to downcast
+        // Them all to a Cat, then there's a chance that some of these Animal are actually Dogs,
+        // so the process fails.
 
-        //Anonymous Classes
+        // Anonymous Classes
         // Way to extend existing classes on the fly.
-        //After constructor call, we have opened a curly braces and have overridden the start method's implementation on the fly
-        // The @Override annotation is used to make code easier to understand, because it makes it more obvious when methods are overridden
+        // After constructor call, we have opened a curly braces and have overridden the start method's
+        // implementation on the fly
+        // The @Override annotation is used to make code easier to understand,
+        // because it makes it more obvious when methods are overridden
         // This modification is applicable only to current object, and not the class itself.
-        // So if we create another object of that class, the start method's implementation will be the one defined in the class.
+        // So if we create another object of that class,
+        // the start method's implementation will be the one defined in the class.
         Machine machine = new Machine(){
             @Override
             public void start(){
@@ -507,28 +520,28 @@ class MyClass {
         Machine machine1 = new Machine();
         machine1.start();
 
-
-        //Inner classes
-        //Java supports nesting classes. A class can be a member of another class.
+        // Inner classes
+        // Java supports nesting classes. A class can be a member of another class.
         // Once we declare this new nested class as private, it cannot be accessed from an object outside the class.
         Robot robot = new Robot(1);
 
 
-        //The Equal method
-        //  When we create objects, the variables store references to the objects.
+        // The Equal method
+        // When we create objects, the variables store references to the objects.
         // So, when we use compare (==), it is actually comparing the references and not the object values.
         Name n1 = new Name("Prashik");
         Name n2 = new Name("Prashik");
         System.out.println(n1==n2);
-        //Despite have two objects with similar name, the equality tests returns false because we have two different objects (two different references or memory locations).
+        // Despite have two objects with similar name, the equality tests returns false
+        // because we have two different objects (two different references or memory locations).
 
-        //equals() method
+        // equals() method
         // Each object has a predefined equals() method that is used for semantical equality testing.
         // Need to implement equals and hashcode()
         System.out.println(n1.equals(n2));
 
 
-        //Enums
+        // Enums
         // Enums are special type used to define collections of constants.
         // Enum cannot be local
         Rank rank = Rank.SOLDIER;
@@ -551,18 +564,18 @@ class MyClass {
                 System.out.println("No one says Hi");
         }
 
-        //Always use enums when a variable (especially a method parameter) can only take one out of a small set of possible values.
-        // If we use enums instead of integers (or string codes), we increase compile-time checking and avoid errors from passing in invalid constants, and you document which values are legal to use.
+        // Always use enums when a variable (especially a method parameter) can only take one out of a
+        // small set of possible values.
+        // If we use enums instead of integers (or string codes), we increase compile-time checking and
+        // avoid errors from passing in invalid constants, and you document which values are legal to use.
         // E.g. month, names, days of the week, deck of cards, etc.
 
-
-
-        //using the Java API
+        // using the Java API
         // http://docs.oracle.com/javase/7/docs/api/
 
 
-        //Exceptions
-        //Problem that occurs during program execution.
+        // Exceptions
+        // Problem that occurs during program execution.
         // Exception handling - Handles runtime erros to maintain normal application flow.
         // Can be caught using combination of try and catch keywords
         /*
@@ -571,7 +584,7 @@ class MyClass {
             } catch (Exception e){
         }
          */
-        //Catch statement involves declaring the type of exception you are trying to catch.
+        // Catch statement involves declaring the type of exception you are trying to catch.
         // The exception type can be used to catch all possible exceptions.
         try{
             int a6[] = new int[2];
@@ -581,9 +594,10 @@ class MyClass {
         }
         // Exception e is used to catch all possible exceptions.
 
-        //throw
+        // throw
         // The throw keyword allows you to manually generate exceptions from methods.
-        // Some of the numerous available exceptions types include IndexOutOfBoundsException, IllegalArgumentException, ArithmeticException, etc.
+        // Some of the numerous available exceptions types include IndexOutOfBoundsException,
+        // IllegalArgumentException, ArithmeticException, etc.
         // div() method is using throw
         // throw statement in the method div() defines the type of exceptions the method can throw.
         // Multiple exceptions can be defined in the throws statement using a comma-separated list.
@@ -601,52 +615,20 @@ class MyClass {
          */
         //We can use Exception type to handle all other exception as the last catch.
 
-
-
-        //Threads
-        // java is multi-threaded programming language.
-        // We can subdivide specific operatinos within a single application into individual threads that all run in parallel.
-
-        // Two ways to create a thread.
-        /**
-         * Extent the Thread class: Inherit the Thread class, override it's run() method, and write the functionality of the thread in the run() method.
-         * Then we can create a new object of our class and call it's start method to run the thread.
-         */
-        Loader loader = new Loader();
-        loader.start();
-        //Here, Loader class extends Thread class and overrides its run() method. When we create the loader object and call its start() method, the run() method statements execute on a different thread.
-
-
-        //Running thread using Runnable
-        //Implementing the Runnable interface, implement the run() method.
-        // Then create a new Thread object, and pass the Runnable class to it's constructor, and start the thread by calling the start() method.
-        Thread t = new Thread(new LoaderRunnalbe());
-        t.start();
-        //Thread.sleep() method pauses a thread for specified period of time.
-        // Thread.sleep(1000) -> 1 sec pause.
-        // Thread.sleep() Throws an InterruptedException, so we need to take care of it as well.
-        //Implementing using runnable is preferred because it enables you to extend from another class.
-
-        //Types of Exceptions
-        /**
-         * Checked - checked during compilation
-         * Unchecked (runtime) checked during runtime
-         */
-
-
-        //ArrayList
+        // ArrayList
         // Special classes to store and manipulate groups of objects.
-        // ArraysLists are created with an initial size, but when this size is exceed, the collection is automatically enlarged.
+        // ArraysLists are created with an initial size, but when this size is exceed,
+        // the collection is automatically enlarged.
         // need to import it from java.util.ArrayList
         ArrayList arrayList = new ArrayList();
 
-        //Provide the capacity and type of the objects the ArrayList would hold.
+        // Provide the capacity and type of the objects the ArrayList would hold.
         ArrayList<String> colors = new ArrayList<>(10);
-        //ArrayLists store objects. Thus, the class specified must be class type.
+        // ArrayLists store objects. Thus, the class specified must be class type.
         // We cannot use int or double here. Need to Provide the special class types for these.
         // Integer for int, Double for double, and so on.
 
-        //It also provides a number of useful methods for manipulating its objects.
+        // It also provides a number of useful methods for manipulating its objects.
         // add() methods adds new objects to ArrayList, remove() method removes the object.
 
         ArrayList<String> color = new ArrayList<String>();
@@ -662,9 +644,6 @@ class MyClass {
          * clear() - removes all elements
          */
 
-
-
-
         //LinkedLists
         // need to import java.util.LindedList
         // Very similar to ArrayList
@@ -675,12 +654,14 @@ class MyClass {
         linkedList.add("Green");
         linkedList.remove("Green");
 
+
         /**
          * LinkedLists vs ArrayLists
          * Most notable is the way they store objects.
          * ArrayLists is far better for storing and accessing data, and it is very similar to normal array.
          * LinkedLists is better for manipulating data, such as making numerous inserts and deletes.
-         * In addition to storing objects, it stores the memory address of the elements that follows it. Each elements contains a link to the neighboring element.
+         * In addition to storing objects, it stores the memory address of the elements that follows it.
+         Each elements contains a link to the neighboring element.
          *
          * Use ArrayLists when we need rapid access to data.
          * Use LinkedList when we need to make a large number of inserts and/or deletes.
@@ -689,15 +670,15 @@ class MyClass {
             System.out.println(i);
         }
 
-
-
         //HashMap
         /**
          * Hashmap is used for storing data collections as key and value pairs.
          * One object as key, and the other as value.
          * put(), remove() and get() methods are used to add, delete and access values in HashMap.
-         * Cannot contain duplicate keys. Adding a new item with a key that already exists overwrites the old element.
-         * Hashmap class provides containsKey() and containsValue() methods to determine the presence of a specified key or value.
+         * Cannot contain duplicate keys.
+         Adding a new item with a key that already exists overwrites the old element.
+         * Hashmap class provides containsKey() and containsValue() methods to
+         determine the presence of a specified key or value.
          * If you try to get a value that is not present in your map, it return null value.
          * null value is a special value that represents the absence of a value.
          */
@@ -728,9 +709,11 @@ class MyClass {
         //LinkedHashSet
         /**
          * The HashSet does not automatically retain the order of elements as they are added.
-         * To order the elements, use LinkedHashSet, which maintains a linked list of the set's elements in the order in which they were inserted.
+         * To order the elements, use LinkedHashSet, which maintains a linked list of the set's elements
+         in the order in which they were inserted.
          * What is hashing?
-         * A hash table stores information through a mechanism called hashing, in which a key's informational content is used to determine a unique value called a hashcode.
+         * A hash table stores information through a mechanism called hashing,
+         in which a key's informational content is used to determine a unique value called a hashcode.
          * Each element in the HashSet is associated with it's unique hash code.
          */
 
@@ -752,12 +735,11 @@ class MyClass {
         System.out.println(color);
         //We can also do the same for integer type ArrayList/LinkedList/HashMap/HashSet/LinkedHashSet
 
-
-
         //Iterators
         /**
          * An object that enables to cycle through a collection, obtain or remove elements.
-         * Each of the collection classes provides an iterator() method, that returns an iterator to start of the collection.
+         * Each of the collection classes provides an iterator() method, that returns an iterator
+         to start of the collection.
          * The Iterator class provides the following methods:
          * hasNext(): return true, if there is atleast one more element.
          * next(): return next object and advances
@@ -835,7 +817,24 @@ class MyClass {
         catch(Exception e){
             System.out.println("Error occured.");
         }
+    }
 
+    //Entry point
+    //static: method can be run without creating an instance of the class containing the main method.
+    // void test() -> Doesn't return anything.
+    // Input parameters is the array of string called args
+    // main method represents main thread
+    public static void main(String[ ] args) throws InterruptedException {
+        // whatever we write in there will be executed by main thread
+        // thread always execute the jobs in a sequence
 
+        // Learn Lambdas
+        //new Lambda().testLambda();
+
+        // Learn about threads
+       // new RunThreads().learnThreads();
+
+        // Learn about threads youtube
+        new YoutubeThreads().learnThreads();
     }
 }
