@@ -1,5 +1,6 @@
 package main;
 
+import configmap.Configmap;
 import lambda.Lambda;
 import samples.Animal;
 import samples.Counter;
@@ -16,6 +17,7 @@ import threads.RunThreads;
 import threads.YoutubeThreads;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 import java.io.File;
 
@@ -824,7 +826,7 @@ class MyClass {
     // void test() -> Doesn't return anything.
     // Input parameters is the array of string called args
     // main method represents main thread
-    public static void main(String[ ] args) throws InterruptedException {
+    public static void main(String[ ] args) throws InterruptedException, IOException {
         // whatever we write in there will be executed by main thread
         // thread always execute the jobs in a sequence
 
@@ -835,6 +837,9 @@ class MyClass {
        // new RunThreads().learnThreads();
 
         // Learn about threads youtube
-        new YoutubeThreads().learnThreads();
+        // new YoutubeThreads().learnThreads();
+
+        // Learn how to read yaml file
+        new Configmap().loadConfigmap();
     }
 }
