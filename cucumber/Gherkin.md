@@ -147,3 +147,225 @@ Examples:
 - Invite a friend
 - Withdraw money
 
+## Then
+Then steps are used to describe an expected outcome, or result.
+The step definition of a Then step should use an assertion to compare the actual outcome (what the system actually does) to the expected outcome (what the step says the system is supposed to do).
+An outcome should be on an observable output.
+
+Examples:
+- See that the guessed word was wrong
+- Receive an invitation
+- Card should be swallowed
+
+While it might be tempting to implement Then steps to look in the database - resist that temptation!
+You should only verify an outcome that is observable for the user (or external system), and changes to a database are usually not.
+
+## And, But
+If you have successive Given’s, When’s, or Then’s, you could write:
+```gherkin
+Example: Multiple Givens
+  Given one thing
+  Given another thing
+  Given yet another thing
+  When I open my eyes
+  Then I should see something
+  Then I shouldn't see something else
+```
+The below two examples shows how we can replace given,
+when and then with Ands and But
+```gherkin
+Example: Multiple Givens
+  Given one thing
+  And another thing
+  And yet another thing
+  When I open my eyes
+  Then I should see something
+  But I shouldn't see something else
+```
+Gherkin also supports using an asterisk (*) in place 
+of any of the normal step keywords. 
+This can be helpful when you have some steps that 
+are effectively a list of things, so you can express 
+it more like bullet points where otherwise the 
+natural language of And etc might not read so elegantly.
+
+Example:
+```gherkin
+Scenario: All done
+  Given I am out shopping
+  And I have eggs
+  And I have milk
+  And I have butter
+  When I check my list
+  Then I don't need anything
+```
+can be written as
+```gherkin
+Scenario: All done
+  Given I am out shopping
+  * I have eggs
+  * I have milk
+  * I have butter
+  When I check my list
+  Then I don't need anything
+```
+
+## Background
+Occasionally you’ll find yourself repeating the same Given steps in all of the scenarios in a Feature.
+Since it is repeated in every scenario, this is an indication that those steps are not essential to describe the scenarios; they are incidental details. You can literally move such Given steps to the background, by grouping them under a Background section.
+A Background allows you to add some context to the scenarios that follow it. It can contain one or more Given steps, which are run before each scenario, but after any Before hooks.
+A Background is placed before the first Scenario/Example, at the same level of indentation.
+
+example:
+```gherkin
+Feature: Multiple site support
+  Only blog owners can post to a blog, except administrators,
+  who can post to all blogs.
+
+  Background:
+    Given a global administrator named "Greg"
+    And a blog named "Greg's anti-tax rants"
+    And a customer named "Dr. Bill"
+    And a blog named "Expensive Therapy" owned by "Dr. Bill"
+
+  Scenario: Dr. Bill posts to his own blog
+    Given I am logged in as Dr. Bill
+    When I try to post to "Expensive Therapy"
+    Then I should see "Your article was published."
+
+  Scenario: Dr. Bill tries to post to somebody else's blog, and fails
+    Given I am logged in as Dr. Bill
+    When I try to post to "Greg's anti-tax rants"
+    Then I should see "Hey! That's not your blog!"
+
+  Scenario: Greg posts to a client's blog
+    Given I am logged in as Greg
+    When I try to post to "Expensive Therapy"
+    Then I should see "Your article was published."
+```
+
+Background is also supported at the Rule level, for example:
+example:
+```gherkin
+Feature: Overdue tasks
+  Let users know when tasks are overdue, even when using other
+  features of the app
+
+  Rule: Users are notified about overdue tasks on first use of the day
+    Background:
+      Given I have overdue tasks
+
+    Example: First use of the day
+      Given I last used the app yesterday
+      When I use the app
+      Then I am notified about overdue tasks
+
+    Example: Already used today
+      Given I last used the app earlier today
+      When I use the app
+      Then I am not notified about overdue tasks
+```
+
+You can only have one set of Background steps per Feature or Rule. If you need different Background steps for different scenarios, consider breaking up your set of scenarios into more Rules or more Features.
+
+## Tips for using Background
+Don’t use Background to set up complicated states, unless that state is actually something the client needs to know.
+- For example, if the user and site names don’t matter to the client, use a higher-level step such as Given I am logged in as a site owner.
+
+Keep your Background section short.
+- The client needs to actually remember this stuff when reading the scenarios. If the Background is more than 4 lines long, consider moving some of the irrelevant details into higher-level steps.
+
+Make your Background section vivid.
+- Use colourful names, and try to tell a story. The human brain keeps track of stories much better than it keeps track of names like "User A", "User B", "Site 1", and so on.
+
+Keep your scenarios short, and don’t have too many.
+- If the Background section has scrolled off the screen, the reader no longer has a full overview of what’s happening. Think about using higher-level steps, or splitting the *.feature file.
+
+## Scenario Outline
+The Scenario Outline keyword can be used to run the same Scenario multiple times, with different combinations of values.
+The keyword Scenario Template is a synonym of the keyword Scenario Outline.
+```gherkin
+Scenario: eat 5 out of 12
+  Given there are 12 cucumbers
+  When I eat 5 cucumbers
+  Then I should have 7 cucumbers
+
+Scenario: eat 5 out of 20
+  Given there are 20 cucumbers
+  When I eat 5 cucumbers
+  Then I should have 15 cucumbers
+```
+We can collapse these two similar scenarios into a Scenario Outline.
+
+Scenario outlines allow us to more concisely express these scenarios through the use of a template with < >-delimited parameters:
+```gherkin
+Scenario Outline: eating
+  Given there are <start> cucumbers
+  When I eat <eat> cucumbers
+  Then I should have <left> cucumbers
+
+  Examples:
+    | start | eat | left |
+    |    12 |   5 |    7 |
+    |    20 |   5 |   15 |
+```
+
+## Examples
+A Scenario Outline must contain one or more Examples (or Scenarios) section(s).
+Its steps are interpreted as a template which is never directly run. Instead, the Scenario Outline is run once for each row in the Examples section beneath it (not counting the first header row).
+
+## Step Arguments
+In some cases you might want to pass more data to a step than fits on a single line. For this purpose Gherkin has Doc Strings and Data Tables.
+
+## Doc Strings
+Example:
+```gherkin
+Given a blog post named "Random" with Markdown body
+  """
+  Some Title, Eh?
+  ===============
+  Here is the first paragraph of my blog post. Lorem ipsum dolor sit amet,
+  consectetur adipiscing elit.
+  """
+```
+Indentation of the opening """ is unimportant, although common practice is two spaces in from the enclosing step.
+The indentation inside the triple quotes, however, is significant.
+Each line of the Doc String will be dedented according to the opening """. Indentation beyond the column of the opening """ will therefore be preserved.
+
+Doc strings also support using three backticks as the delimiter:
+example:
+```gherkin
+Given a blog post named "Random" with Markdown body
+  ```
+Some Title, Eh?
+===============
+Here is the first paragraph of my blog post. Lorem ipsum dolor sit amet,
+consectetur adipiscing elit.
+  ```
+```
+
+It’s possible to annotate the DocString with the type of content it contains. You specify the content type after the triple quote, as follows:
+```gherkin
+Given a blog post named "Random" with Markdown body
+  """markdown
+  Some Title, Eh?
+  ===============
+  Here is the first paragraph of my blog post. Lorem ipsum dolor sit amet,
+  consectetur adipiscing elit.
+  """
+```
+
+## Data Tables
+Data Tables are handy for passing a list of values to a step definition:
+```gherkin
+Given the following users exist:
+  | name   | email              | twitter         |
+  | Aslak  | aslak@cucumber.io  | @aslak_hellesoy |
+  | Julien | julien@cucumber.io | @jbpros         |
+  | Matt   | matt@cucumber.io   | @mattwynne      |
+```
+
+Just like Doc Strings, Data Tables will be passed to the step definition as the last argument.
+
+## Table Cell Escaping
+If you want to use a newline character in a table cell, you can write this as \n. If you need a | as part of the cell, you can escape it as \|. And finally, if you need a \, you can escape that with \\.
