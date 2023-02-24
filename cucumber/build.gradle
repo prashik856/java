@@ -9,10 +9,21 @@ repositories {
     mavenCentral()
 }
 
+ext{
+    jUnitJupiterVersion = '5.9.0'
+    cucumberVersion = '7.8.1'
+}
+
 dependencies {
-    implementation 'io.cucumber:cucumber-archetype:7.11.1'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    testImplementation("org.junit.platform:junit-platform-suite:1.9.1")
+    testImplementation(platform("io.cucumber:cucumber-bom:${cucumberVersion}"))
+    testImplementation("io.cucumber:cucumber-java")
+    testImplementation("io.cucumber:cucumber-junit-platform-engine")
+    testImplementation("io.cucumber:cucumber-picocontainer")
+
+    testImplementation(platform("org.junit:junit-bom:${jUnitJupiterVersion}"))
+    testImplementation("org.junit.platform:junit-platform-suite")
+    testImplementation("org.junit.jupiter:junit-jupiter")
 }
 
 test {
