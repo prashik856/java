@@ -1,0 +1,15 @@
+contextRoot: 'null'
+requirements:
+  database:
+    shared: false
+    tenant: true
+  http:
+    external: false
+    idcs: false
+  queue:
+    kafka: false
+  service:
+    type: MULTI_TENANT
+self:
+  name: microservice-status-dashboard
+version: 1.8.1
