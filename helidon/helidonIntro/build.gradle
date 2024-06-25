@@ -1,0 +1,61 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'com.prashik.helidon'
+version = '1.0.0'
+description = """helidon-quickstart-se"""
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    helidonversion = '4.0.10'
+    mainClass='com.prashik.helidon.Main'
+}
+
+dependencies {
+    implementation enforcedPlatform("io.helidon:helidon-dependencies:${project.helidonversion}")
+    implementation 'io.helidon.webserver:helidon-webserver'
+    implementation 'io.helidon.http.media:helidon-http-media-jsonp'
+    implementation 'io.helidon.webserver.observe:helidon-webserver-observe-health'
+    implementation 'io.helidon.webserver.observe:helidon-webserver-observe-metrics'
+    implementation 'io.helidon.config:helidon-config-yaml'
+    implementation 'io.helidon.health:helidon-health-checks'
+
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task copyLibs(type: Copy) {
+    from configurations.runtimeClasspath
+    into 'build/libs/libs'
+}
+
+copyLibs.dependsOn jar
+assemble.dependsOn copyLibs
+
+jar {
+    archiveFileName = "${project.name}.jar"
+    manifest {
+        attributes ('Main-Class': "${project.mainClass}",
+                'Class-Path': configurations.runtimeClasspath.files.collect { "libs/$it.name" }.join(' ')
+        )
+    }
+}
+
+application {
+    mainClass = "${project.mainClass}"
+}
