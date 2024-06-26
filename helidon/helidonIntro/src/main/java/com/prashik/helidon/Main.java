@@ -5,8 +5,7 @@ import io.helidon.logging.common.LogConfig;
 import io.helidon.webserver.WebServer;
 import io.helidon.webserver.http.HttpRouting;
 
-import static io.helidon.config.ConfigSources.classpath;
-import static io.helidon.config.ConfigSources.file;
+import static io.helidon.config.ConfigSources.*;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -36,7 +35,7 @@ public final class Main {
         */
 
         // Using properties file as config
-        Config config = buildConfig();
+        Config config = buildConfigProfile();
         Config.global(config);
 
         WebServer server = WebServer.builder()
@@ -54,12 +53,23 @@ public final class Main {
     private static Config buildConfig() {
         return Config.builder()
                 .disableEnvironmentVariablesSource()
-                .sources(
-                        file("missing-file.properties").optional(),
+                .addSource(directory("conf"))
+                .addSource(file("missing-file.properties").optional())
+                .addSource(file("config-file.properties"))
+                .addSource(classpath("application.yaml"))
+                .addSource(classpath("config.properties"))
+//                .sources(
+//                        directory("conf"),
+//                        file("missing-file.properties").optional(),
 //                        file("config-file.properties"),
-                        classpath("application.yaml"),
-                        classpath("config.properties")
-                ).build();
+//                        classpath("application.yaml"),
+//                        classpath("config.properties")
+//                )
+                .build();
+    }
+
+    private static Config buildConfigProfile() {
+        return Config.create();
     }
 
     /**

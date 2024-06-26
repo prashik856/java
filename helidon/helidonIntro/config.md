@@ -195,3 +195,149 @@ We need to add the optional() method, if the file is missing.
 ```java
 file("missing-file").optional()
 ```
+
+## Directory Source
+A directory source treats every file in the directory as a key, and the file contents as the value.
+
+Create a new directory helidon/conf then create a file named app.greeting in that directory with the following contents:
+```
+HelloFromFileInDirectoryConf
+```
+
+Update the Main class and replace the buildConfig method:
+```java
+return Config.builder()
+.sources(
+directory("conf"),
+classpath("config.properties").optional(),
+classpath("application.yaml"))
+.build();
+```
+
+Build and run the application, then invoke the endpoint and check the response:
+```shell
+curl http://localhost:8080/greet
+
+```
+
+JSON response:
+```json
+{
+"message": "HelloFromFileInDirectoryConf World!"
+}
+```
+
+## Exceeding Three Sources
+Update the Main class and replace the buildConfig method:
+```java
+return Config.builder()
+.addSource(directory("conf"))  
+.addSource(file("config-file.properties"))
+.addSource(classpath("config.properties").optional())
+.addSource(classpath("application.yaml"))
+.build();
+```
+
+Build and run the application, then invoke the endpoint:
+```shell
+curl http://localhost:8080/greet
+
+```
+
+JSON response:
+```json
+{
+"message": "HelloFromFileInDirectoryConf World!"
+}
+```
+
+## Configuration Profiles
+Simplest way to use a profile is to define a config-profile.yaml (and possible other files, such as config-profile-dev.yaml for dev profile) on classpath or on file system, and create config using Config.create(). The profile can be changed by a system property config.profile, or using an environment variable HELIDON_CONFIG_PROFILE.
+
+Create a file named config-profile.yaml in the helidon-quickstart-se directory with the following contents:
+```yaml
+sources:
+    - type: "classpath"
+      properties:
+        resource: "application.yaml" 
+```
+
+Update the Main class and replace the buildConfig method:
+```java
+return Config.create();
+
+```
+
+Will use config-profile.yaml by default
+Build and run the application, then invoke the endpoint:
+```shell
+curl http://localhost:8080/greet
+```
+
+JSON response:
+```json
+{
+"message": "HelloFrom-application.yaml World!"
+}
+```
+The application.yaml resource file was used to get the greeting.
+
+The source precedence order in a profile file is the order of appearance in the file. This is demonstrated below where the config-file.properties has the highest order of precedence.
+Replace the contents of the config-profile.yaml file:
+```yaml
+sources:
+    - type: "file"
+      properties:
+        path: "./config-file.properties"
+    - type: "classpath"
+      properties:
+        resource: "application.yaml"
+    - type: "file"
+      properties:
+        path: "optional-config-file"
+        optional: true
+```
+
+Restart the application, then invoke the endpoint:
+```shell
+curl http://localhost:8080/greet
+
+```
+
+JSON response:
+```json
+{
+"message": "HelloFrom-config-file.properties World!"
+}
+```
+The config-file.properties source now takes precedence.
+
+When using a profile file, you need to explicitly include both environment variables and system properties as a source if you want to use them.
+Replace the contents of the config-profile.yaml file:
+```yaml
+sources:
+    - type: "environment-variables"
+    - type: "system-properties"
+    - type: "classpath"
+      properties:
+        resource: "application.yaml"
+    - type: "file"
+      properties:
+        path: "./config-file.properties"
+```
+
+## Accessing Config within an Application
+
+### Accessing Config Using Keys or Navigation
+View the GreetService constructor:
+```java
+greeting.set(Config.global().get("app.greeting").asString().orElse("Ciao"));
+```
+
+You can also access the same greeting by navigating the nodes.
+Replace the GreetService constructor with the following code:
+```java
+greeting.set(Config.global().get("app").get("greeting").asString().orElse("Ciao")); 
+```
+
+## Using Filters and Collections

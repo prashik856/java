@@ -26,9 +26,13 @@ public class GreetService implements HttpService{
         this(Config.global().get("app"));
     }
 
-    GreetService(Config appConfig) {
-        greeting.set(appConfig.get("greeting").asString().orElse("Ciao"));
+    GreetService(Config config) {
+        greeting.set(config.get("app").get("greeting").asString().orElse("Ciao"));
     }
+
+//    GreetService(Config appConfig) {
+//        greeting.set(appConfig.get("greeting").asString().orElse("Ciao"));
+//    }
 
     /**
      * A service registers itself by updating the routing rules.
