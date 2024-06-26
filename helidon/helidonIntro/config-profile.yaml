@@ -4,6 +4,8 @@ sources:
   - type: "file"
     properties:
       path: "./config-file.properties"
+      change-watcher:
+        type: "file"
   - type: "classpath"
     properties:
       resource: "application.yaml"

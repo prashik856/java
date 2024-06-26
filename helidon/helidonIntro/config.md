@@ -340,4 +340,49 @@ Replace the GreetService constructor with the following code:
 greeting.set(Config.global().get("app").get("greeting").asString().orElse("Ciao")); 
 ```
 
-## Using Filters and Collections
+## Reacting to Configuration Updates
+Replace the contents of the config-profile.yaml file:
+```yaml
+sources:
+- type: "file"
+  properties:
+    path: "./config-file.properties"
+    change-watcher:
+      type: "file"
+- type: "classpath"
+  properties:
+    resource: "application.yaml"
+```
+
+Build and run the application, then invoke the endpoint:
+```shell
+curl http://localhost:8080/greet
+
+```
+
+JSON response:
+```json
+{
+"message": "HelloFrom-config-file.properties World!"
+}
+```
+
+Update config-file.properties with the following contents:
+```properties
+app.greeting=HelloFrom-config-file-edited.properties
+```
+
+After a few seconds, check the response:
+```shell
+curl http://localhost:8080/greet
+```
+
+JSON response:
+```json
+{
+"message": "Updated HelloFrom-config-file.properties World!"
+}
+
+```
+The application reacted to the change and updated the greeting.
+

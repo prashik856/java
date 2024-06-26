@@ -27,7 +27,10 @@ public class GreetService implements HttpService{
     }
 
     GreetService(Config config) {
-        greeting.set(config.get("app").get("greeting").asString().orElse("Ciao"));
+        //        greeting.set(config.get("app").get("greeting").asString().orElse("Ciao"));
+        Config configGreeting = config.get("app.greeting");
+        greeting.set(configGreeting.asString().orElse("Ciao"));
+        configGreeting.onChange(cfg -> greeting.set(cfg.asString().orElse("Ciao")));
     }
 
 //    GreetService(Config appConfig) {

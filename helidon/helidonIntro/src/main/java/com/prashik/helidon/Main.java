@@ -76,6 +76,6 @@ public final class Main {
      * Updates HTTP Routing and registers observe providers.
      */
     private static void routing(HttpRouting.Builder routing) {
-        routing.register("/greet", new GreetService());
+        routing.register("/greet", new GreetService(Config.global()));
     }
 }
