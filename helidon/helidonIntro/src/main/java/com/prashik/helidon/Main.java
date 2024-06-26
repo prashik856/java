@@ -1,9 +1,18 @@
 package com.prashik.helidon;
 
 import io.helidon.config.Config;
+import io.helidon.health.HealthCheckType;
+import io.helidon.health.HealthCheckResponse;
 import io.helidon.logging.common.LogConfig;
+import io.helidon.spi.HelidonStartupProvider;
 import io.helidon.webserver.WebServer;
 import io.helidon.webserver.http.HttpRouting;
+import io.helidon.webserver.observe.ObserveFeature;
+import io.helidon.webserver.observe.health.HealthObserver;
+
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static io.helidon.config.ConfigSources.*;
 
@@ -38,8 +47,60 @@ public final class Main {
         Config config = buildConfigProfile();
         Config.global(config);
 
+        AtomicLong serverStartTime = new AtomicLong();
+
+        HealthObserver healthObserver = HealthObserver.builder()
+                .details(true)
+                .endpoint("/myhealth")
+                .config(config.get("server.features.observe.observers.health"))
+                .addCheck(() -> HealthCheckResponse.builder()
+                        .status(System.currentTimeMillis() - serverStartTime.get() >= 8000)
+                        .detail("time", System.currentTimeMillis())
+                        .build(),
+                        HealthCheckType.STARTUP,
+                        "warmedUp"
+                )
+                .build();
+
+        AtomicLong readyTime = new AtomicLong(0);
+        ObserveFeature observeFeature = ObserveFeature.builder()
+                .config(config.get("server.feature.observe"))
+                .addObserver(
+                        HealthObserver.builder()
+                                .useSystemServices(true)
+                                .addCheck(() -> HealthCheckResponse.builder()
+                                        .status(readyTime.get() != 0)
+                                        .detail("time", readyTime.get())
+                                        .build(),
+                                        HealthCheckType.READINESS
+                                )
+                                .addCheck(() -> HealthCheckResponse.builder()
+                                        .status(readyTime.get() != 0
+                                                && Duration.ofMillis(System.currentTimeMillis()
+                                                        - readyTime.get())
+                                                .getSeconds() >= 3)
+                                        .detail("time", readyTime.get())
+                                        .build(),
+                                        HealthCheckType.STARTUP
+                                )
+                                .addCheck(() -> HealthCheckResponse.builder()
+                                        .status(HealthCheckResponse.Status.UP)
+                                        .detail("time", System.currentTimeMillis())
+                                        .build(),
+                                        HealthCheckType.LIVENESS
+                                )
+                )
+                .build();
+
+        ObserveFeature observe = ObserveFeature.builder()
+                .config(config.get("server.feature.observe"))
+                .addObserver(healthObserver)
+                .build();
+
         WebServer server = WebServer.builder()
                 .config(config.get("server"))
+                .addFeature(observe)
+                .addFeature(observeFeature)
                 .routing(Main::routing)
                 .build()
                 .start();

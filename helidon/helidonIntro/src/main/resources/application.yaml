@@ -7,3 +7,8 @@ app:
 server:
   port: 8080
   host: 0.0.0.0
+  features:
+    observe:
+      observers:
+        health:
+          details: true

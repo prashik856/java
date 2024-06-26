@@ -385,4 +385,3 @@ JSON response:
 
 ```
 The application reacted to the change and updated the greeting.
-
