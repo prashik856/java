@@ -1,5 +1,8 @@
+#app:
+#  greeting: "Hello"
+
 app:
-  greeting: "Hello"
+  greeting: HelloFrom-application.yaml
 
 server:
   port: 8080

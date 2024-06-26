@@ -1,6 +1,6 @@
-package http;
+package flyway;
 
-public class SimpleHTTPGetRequest {
+public class Flyway {
     public static void main(String[] args) {
 
     }
