@@ -108,3 +108,60 @@ Helidon SE also includes additional, extended KPI metrics which are disabled by 
     deferred - a Gauge (requests.deferred) measuring delayed request processing (work on a request was delayed after Helidon received the request)
 ```
 
+You can enable and control these meters using configuration:
+```yaml
+server:
+  features:
+    observe:
+      observers:
+        metrics:
+          key-performance-indicators:
+            extended: true
+            long-running:
+              threshold-ms: 2000
+```
+
+Your Helidon SE application can also control the KPI settings programmatically.
+
+Assign KPI metrics behavior from code
+```java
+KeyPerformanceIndicatorMetricsConfig kpiConfig =
+        KeyPerformanceIndicatorMetricsConfig.builder() 
+                .extended(true) 
+                .longRunningRequestThreshold(Duration.ofSeconds(4)) 
+                .build();
+
+MetricsObserver metrics = MetricsObserver.builder()
+        .metricsConfig(MetricsConfig.builder() 
+                               .keyPerformanceIndicatorMetricsConfig(kpiConfig)) 
+        .build();
+
+ObserveFeature observe = ObserveFeature.builder()
+        .config(config.get("server.features.observe"))
+        .addObserver(metrics) 
+        .build();
+
+WebServer server = WebServer.builder() 
+        .config(config.get("server"))
+        .addFeature(observe)
+        .routing(Main::routing)
+        .build()
+        .start();
+```
+
+## Metrics Metadata
+Each meter has associated metadata that includes:
+```
+    name: The name of the meter.
+    units: The unit of the meter such as time (seconds, milliseconds), size (bytes, megabytes), etc.
+    a description of the meter. 
+```
+
+Get the metrics metadata using HTTP OPTIONS method:
+```shell
+curl -X OPTIONS -H "Accept: application/json"  'http://localhost:8080/observe/metrics?scope=base'
+```
+
+## Counter Meter
+The Counter meter is a monotonically increasing number. The following example demonstrates how to use a Counter to track the number of times the /cards endpoint is called.
+

@@ -12,3 +12,10 @@ server:
       observers:
         health:
           details: true
+        metrics:
+          enabled: true
+          key-performance-indicators:
+            extended: true
+            long-running:
+              threshold-ms: 2000
+

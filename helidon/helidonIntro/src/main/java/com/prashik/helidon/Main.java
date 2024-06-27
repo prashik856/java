@@ -4,12 +4,15 @@ import io.helidon.config.Config;
 import io.helidon.health.HealthCheckType;
 import io.helidon.health.HealthCheckResponse;
 import io.helidon.logging.common.LogConfig;
+import io.helidon.metrics.api.KeyPerformanceIndicatorMetricsConfig;
+import io.helidon.metrics.api.MetricsConfig;
 import io.helidon.webserver.WebServer;
 import io.helidon.webserver.http.HttpRouting;
 import io.helidon.webserver.observe.ObserveFeature;
 import io.helidon.webserver.observe.health.HealthObserver;
 import io.helidon.webserver.observe.metrics.MetricsObserver;
 
+import java.time.Duration;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static io.helidon.config.ConfigSources.*;
@@ -90,12 +93,23 @@ public final class Main {
 //                )
 //                .build();
 
+        KeyPerformanceIndicatorMetricsConfig kpiConfig = KeyPerformanceIndicatorMetricsConfig.builder()
+                .extended(true)
+                .longRunningRequestThreshold(Duration.ofSeconds(4))
+                .build();
+
+        MetricsObserver metricsObserver = MetricsObserver.builder()
+                .metricsConfig(MetricsConfig.builder()
+                        .keyPerformanceIndicatorMetricsConfig(kpiConfig))
+                .build();
+
         ObserveFeature observe = ObserveFeature.builder()
                 .config(config.get("server.feature.observe"))
                 .addObserver(healthObserver)
-                .addObserver(MetricsObserver.builder()
-                        .enabled(false)
-                        .build())
+//                .addObserver(MetricsObserver.builder()
+//                        .enabled(true)
+//                        .build())
+                .addObserver(metricsObserver)
                 .build();
 
         WebServer server = WebServer.builder()
