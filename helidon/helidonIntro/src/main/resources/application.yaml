@@ -5,9 +5,14 @@ app:
   greeting: HelloFrom-application.yaml
 
 server:
-  port: 8080
+  port: 9090
   host: 0.0.0.0
   features:
+#    security:
+#      paths:
+#        - path: "/greet"
+#          methods: [ "get" ]
+#          authenticate: true
     observe:
       observers:
         health:
@@ -18,4 +23,18 @@ server:
             extended: true
             long-running:
               threshold-ms: 2000
+
+security:
+  providers:
+  - abac:
+  - oidc:
+      client-id: "prashik"
+      # Will only run locally. Can be exposed.
+      client-secret: "SfG6Qfr3gGarYG8827iKQAIBr8S3QbpM"
+      identity-uri: "http://localhost:8080/realms/prashikRealm"
+      audience: "account"
+      header-use: "true"
+      proxy-host: ""
+      frontend-uri: "http://localhost:9090"
+      server-type: "@default"
 

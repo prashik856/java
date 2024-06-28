@@ -6,6 +6,7 @@ import io.helidon.health.HealthCheckResponse;
 import io.helidon.logging.common.LogConfig;
 import io.helidon.metrics.api.KeyPerformanceIndicatorMetricsConfig;
 import io.helidon.metrics.api.MetricsConfig;
+import io.helidon.security.providers.oidc.OidcFeature;
 import io.helidon.webserver.WebServer;
 import io.helidon.webserver.http.HttpRouting;
 import io.helidon.webserver.observe.ObserveFeature;
@@ -154,5 +155,6 @@ public final class Main {
         routing.register("/greet", new GreetService(Config.global()))
                 .register("/cards", new GreetingCards())
                 .get("/simple-greet", (req, res) -> res.send("Hello World!"));
+//                .addFeature(OidcFeature.create(Config.global()));
     }
 }

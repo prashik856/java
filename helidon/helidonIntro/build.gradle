@@ -24,6 +24,7 @@ dependencies {
     implementation 'io.helidon.webserver.observe:helidon-webserver-observe-metrics'
     implementation 'io.helidon.config:helidon-config-yaml'
     implementation 'io.helidon.health:helidon-health-checks'
+    implementation 'io.helidon.security.providers:helidon-security-providers-oidc'
 
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'

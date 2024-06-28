@@ -1,14 +1,14 @@
 sources:
   - type: "environment-variables"
   - type: "system-properties"
+  - type: "classpath"
+    properties:
+      resource: "application.yaml"
   - type: "file"
     properties:
       path: "./config-file.properties"
       change-watcher:
         type: "file"
-  - type: "classpath"
-    properties:
-      resource: "application.yaml"
   - type: "file"
     properties:
       path: "optional-config-file"
