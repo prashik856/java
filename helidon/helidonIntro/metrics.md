@@ -165,3 +165,222 @@ curl -X OPTIONS -H "Accept: application/json"  'http://localhost:8080/observe/me
 ## Counter Meter
 The Counter meter is a monotonically increasing number. The following example demonstrates how to use a Counter to track the number of times the /cards endpoint is called.
 
+Create a new class named GreetingCards with the following code:
+```java
+public class GreetingCards implements HttpService {
+
+    private static final JsonBuilderFactory JSON = Json.createBuilderFactory(Map.of());
+
+    private final Counter cardCounter; 
+
+    GreetingCards() {
+        cardCounter = Metrics.globalRegistry()
+                .getOrCreate(Counter.builder("cardCount")
+                                     .description("Counts card retrievals")); 
+    }
+
+    @Override
+    public void routing(HttpRules rules) {
+        rules.get("/", this::getDefaultMessageHandler);
+    }
+
+    private void getDefaultMessageHandler(ServerRequest request, ServerResponse response) {
+        cardCounter.increment(); 
+        sendResponse(response, "Here are some cards ...");
+    }
+
+    private void sendResponse(ServerResponse response, String msg) {
+        JsonObject returnObject = JSON.createObjectBuilder().add("message", msg).build();
+        response.send(returnObject);
+    }
+}
+```
+
+Update the routing method in the main class as follows:
+```java
+static void routing(HttpRouting.Builder routing) {
+routing
+.register("/greet", new GreetService())
+.register("/cards", new GreetingCards())
+.get("/simple-greet", (req, res) -> res.send("Hello World!"));
+}
+```
+
+Build and run the application, then invoke the endpoints below:
+```shell
+curl http://localhost:8080/cards
+curl -H "Accept: application/json" 'http://localhost:8080/observe/metrics?scope=application'
+```
+
+JSON response:
+```json
+{
+"cardCount": 1
+}
+```
+
+## Timer Meter
+The Timer meter aggregates durations.
+In the following example, a Timer meter measures the duration of a method’s execution. Whenever the REST /cards endpoint is called, the code updates the Timer with additional timing information.
+
+Replace the GreetingCards class with the following code:
+```java
+public class GreetingCards implements HttpService {
+
+    private static final JsonBuilderFactory JSON = Json.createBuilderFactory(Map.of());
+    private final Timer cardTimer; 
+
+    GreetingCards() {
+        cardTimer = Metrics.globalRegistry()
+                .getOrCreate(Timer.builder("cardTimer") 
+                                     .description("Times card retrievals"));
+    }
+
+    @Override
+    public void routing(HttpRules rules) {
+        rules.get("/", this::getDefaultMessageHandler);
+    }
+
+    private void getDefaultMessageHandler(ServerRequest request, ServerResponse response) {
+        Timer.Sample timerSample = Timer.start(); 
+        sendResponse(response, "Here are some cards ...");
+        response.whenSent(() -> timerSample.stop(cardTimer)); 
+    }
+
+    private void sendResponse(ServerResponse response, String msg) {
+        JsonObject returnObject = JSON.createObjectBuilder().add("message", msg).build();
+        response.send(returnObject);
+    }
+}
+```
+
+Build and run the application, then invoke the endpoints below:
+```shell
+curl http://localhost:8080/cards
+curl http://localhost:8080/cards
+curl -H "Accept: application/json"  'http://localhost:8080/observe/metrics?scope=application'
+```
+
+JSON response:
+```json
+{
+  "cardTimer": {
+    "count": 2,
+    "max": 0.01439681,
+    "mean": 0.0073397075,
+    "elapsedTime": 0.014679415,
+    "p0.5": 0.000278528,
+    "p0.75": 0.01466368,
+    "p0.95": 0.01466368,
+    "p0.98": 0.01466368,
+    "p0.99": 0.01466368,
+    "p0.999": 0.01466368
+  }
+}
+```
+
+## Distribution Summary Meters
+The DistributionSummary meter calculates the distribution of a set of values within ranges. This meter does not relate to time at all. The following example records a set of random numbers in a DistributionSummary meter when the /cards endpoint is invoked.
+
+Replace the GreetingCards class with the following code:
+```java
+public class GreetingCards implements HttpService {
+
+    private static final JsonBuilderFactory JSON = Json.createBuilderFactory(Map.of());
+    private final DistributionSummary cardSummary; 
+
+    GreetingCards() {
+        cardSummary = Metrics.globalRegistry()
+                .getOrCreate(DistributionSummary.builder("cardDist")
+                                     .description("random card distribution")); 
+    }
+
+    @Override
+    public void routing(HttpRules rules) {
+        rules.get("/", this::getDefaultMessageHandler);
+    }
+
+    private void getDefaultMessageHandler(ServerRequest request, ServerResponse response) {
+        Random r = new Random(); 
+        for (int i = 0; i < 1000; i++) {
+            cardSummary.record(1 + r.nextDouble());
+        }
+        sendResponse(response, "Here are some cards ...");
+    }
+
+    private void sendResponse(ServerResponse response, String msg) {
+        JsonObject returnObject = JSON.createObjectBuilder().add("message", msg).build();
+        response.send(returnObject);
+    }
+}
+```
+
+Build and run the application, then invoke the endpoints below:
+```shell
+curl http://localhost:8080/cards
+curl -H "Accept: application/json"  'http://localhost:8080/observe/metrics?scope=application'
+```
+
+JSON response:
+```json
+{
+  "cardDist": {
+    "count": 1000,
+    "max": 1.999805150914427,
+    "mean": 1.4971440362723523,
+    "total": 1497.1440362723522,
+    "p0.5": 1.4375,
+    "p0.75": 1.6875,
+    "p0.95": 1.9375,
+    "p0.98": 1.9375,
+    "p0.99": 1.9375,
+    "p0.999": 1.9375
+  }
+}
+```
+The DistributionSummary.Builder allows your code to configure other aspects of the summary, such as bucket boundaries and percentiles to track.
+
+## Gauge Metric
+The Gauge meter measures a value that is maintained by code outside the metrics subsystem. As with other meters, the application explicitly registers a gauge. When the /observe/metrics endpoint is invoked, Helidon retrieves the value of each registered Gauge.
+
+Replace the GreetingCards class with the following code:
+```java
+public class GreetingCards implements HttpService {
+
+    private static final JsonBuilderFactory JSON = Json.createBuilderFactory(Map.of());
+
+    GreetingCards() {
+        Random r = new Random();
+        Metrics.globalRegistry()
+                .getOrCreate(Gauge.builder("temperature",
+                                           () -> r.nextDouble(100.0))
+                                     .description("Ambient temperature")); 
+    }
+
+    @Override
+    public void routing(HttpRules rules) {
+        rules.get("/", this::getDefaultMessageHandler);
+    }
+
+    private void getDefaultMessageHandler(ServerRequest request, ServerResponse response) {
+        sendResponse(response, "Here are some cards ...");
+    }
+
+    private void sendResponse(ServerResponse response, String msg) {
+        JsonObject returnObject = JSON.createObjectBuilder().add("message", msg).build();
+        response.send(returnObject);
+    }
+}
+```
+
+Build and run the application, then invoke the endpoint below:
+```shell
+curl -H "Accept: application/json"  'http://localhost:8080/observe/metrics?scope=application
+```
+
+JSON response:
+```json
+{
+"temperature": 46.582132737739066
+}
+```

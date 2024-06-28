@@ -151,6 +151,8 @@ public final class Main {
      * Updates HTTP Routing and registers observe providers.
      */
     private static void routing(HttpRouting.Builder routing) {
-        routing.register("/greet", new GreetService(Config.global()));
+        routing.register("/greet", new GreetService(Config.global()))
+                .register("/cards", new GreetingCards())
+                .get("/simple-greet", (req, res) -> res.send("Hello World!"));
     }
 }
