@@ -31,7 +31,7 @@ java -jar ./build/libs/flexy.jar
 - create stars api
 - create series api
 - create movies api
-- Create metadata files and load data on server startup.
+- Create metadata files and load data on server startup. This file should serve as a database.
 - Add metrics for each file and store them in metadata file.
 - Add metrics to response of server object.
 
