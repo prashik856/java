@@ -1,5 +1,6 @@
 package com.prashik.flexy;
 
+import com.prashik.flexy.model.Star;
 import com.prashik.flexy.rest.Stars;
 import com.prashik.flexy.utils.Utils;
 import io.helidon.config.Config;
@@ -9,6 +10,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 
 /**
  * The Main Application class
@@ -30,7 +33,8 @@ public class Main {
      *
      * @param args The input command line arguments
      */
-    public static void main(String[] args) throws NoSuchFileException {
+    public static void main(String[] args) throws NoSuchFileException,
+            NoSuchAlgorithmException {
         logger.info("Setting up log config");
 
         logger.info("Reading global config");
@@ -39,6 +43,9 @@ public class Main {
 
         Path starsDirectoryPath = Utils.checkDirectory(config.get("local.directory.stars").asString().get(),
                 "Stars");
+
+        // array list to store all Stars
+        ArrayList<Star> stars = Utils.getAllStars(starsDirectoryPath);
 
         logger.info("Starting web server");
         WebServer.builder()
