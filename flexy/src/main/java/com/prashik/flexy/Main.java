@@ -3,14 +3,11 @@ package com.prashik.flexy;
 import com.prashik.flexy.rest.Stars;
 import com.prashik.flexy.utils.Utils;
 import io.helidon.config.Config;
-import io.helidon.config.ConfigValue;
-import io.helidon.http.NotFoundException;
-import io.helidon.logging.common.LogConfig;
 import io.helidon.webserver.WebServer;
 import io.helidon.webserver.http.HttpRouting;
 import org.apache.logging.log4j.Logger;
 
-import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
 /**
@@ -33,26 +30,18 @@ public class Main {
      *
      * @param args The input command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NoSuchFileException {
         logger.info("Setting up log config");
 
         logger.info("Reading global config");
         Config config = Config.create();
         Config.global(config);
 
-        String starsDirectory = config.get("local.directory").asString().get();
-        logger.info("Starts Directory Value: {}", starsDirectory);
-
-        // Check if directory exists, if not, quit.
-        Path starsdirectoryPath = Path.of(starsDirectory);
-
-        if(!Files.exists(starsdirectoryPath)) {
-            logger.error("Could not locate {}. Exiting..", starsdirectoryPath.toString());
-            throw new NotFoundException( starsdirectoryPath + " not found.");
-        }
+        Path starsDirectoryPath = Utils.checkDirectory(config.get("local.directory.stars").asString().get(),
+                "Stars");
 
         logger.info("Starting web server");
-        WebServer server = WebServer.builder()
+        WebServer.builder()
                 .config(config.get("server"))
                 .routing(Main::routing)
                 .build()

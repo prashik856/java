@@ -1,10 +1,13 @@
 import com.prashik.flexy.utils.Utils;
+import io.helidon.config.Config;
 import jakarta.json.Json;
 import jakarta.json.JsonBuilderFactory;
 import jakarta.json.JsonObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.util.Collections;
 
 
@@ -40,4 +43,17 @@ public class UtilsTest {
                 jsonObject.getString("prashik")
         );
     }
+
+    /**
+     * Function to test Utils.checkDirectory method.
+     */
+    @Test
+    public void testCheckDirectory() throws NoSuchFileException {
+        String currentDirectory = System.getProperty("user.dir") + "/gradle/wrapper";
+        Path filePath = Path.of(currentDirectory);
+        Path filePathUtils = Utils.checkDirectory(currentDirectory, "test");
+        Assertions.assertEquals(filePath.toString(), filePathUtils.toString());
+    }
+
+
 }
