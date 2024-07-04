@@ -2,6 +2,7 @@ package com.prashik.flexy.rest;
 
 import com.prashik.flexy.utils.Utils;
 import io.helidon.config.Config;
+import io.helidon.http.Status;
 import io.helidon.webserver.http.HttpRules;
 import io.helidon.webserver.http.HttpService;
 import io.helidon.webserver.http.ServerRequest;
@@ -60,6 +61,7 @@ public class Stars implements HttpService {
         String message = "Welcome to the backend server.";
         JsonObject returnObject = JSON.createObjectBuilder()
                 .add("message", message).build();
+        serverResponse.status(Status.OK_200);
         sendResponse(serverResponse, returnObject);
     }
 
