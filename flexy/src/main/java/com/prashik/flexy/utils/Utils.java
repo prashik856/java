@@ -104,9 +104,15 @@ public class Utils {
         }
 
         if(isDirectory) {
+            if(allDirectories.size() > 1) {
+                Collections.sort(allDirectories.subList(1, allDirectories.size()));
+            }
             return allDirectories;
         }
 
+        if(allFiles.size() > 1) {
+            Collections.sort(allFiles.subList(1, allFiles.size()));
+        }
         return allFiles;
     }
 

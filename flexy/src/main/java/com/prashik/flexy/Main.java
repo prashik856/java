@@ -1,6 +1,5 @@
 package com.prashik.flexy;
 
-import com.prashik.flexy.model.Star;
 import com.prashik.flexy.rest.Stars;
 import com.prashik.flexy.utils.Utils;
 import io.helidon.config.Config;
@@ -9,9 +8,7 @@ import io.helidon.webserver.http.HttpRouting;
 import org.apache.logging.log4j.Logger;
 
 import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 
 /**
  * The Main Application class
@@ -41,18 +38,19 @@ public class Main {
         Config config = Config.create();
         Config.global(config);
 
-        Path starsDirectoryPath = Utils.checkDirectory(config.get("local.directory.stars").asString().get(),
-                "Stars");
-
-        // array list to store all Stars
-        ArrayList<Star> stars = Utils.getAllStars(starsDirectoryPath);
-
         logger.info("Starting web server");
-        WebServer.builder()
-                .config(config.get("server"))
-                .routing(Main::routing)
-                .build()
-                .start();
+        try {
+            WebServer.builder()
+                    .config(config.get("server"))
+                    .routing(Main::routing)
+                    .build()
+                    .start();
+        } catch (Exception e) {
+            logger.error("Error starting webserver.");
+            e.printStackTrace();
+            System.exit(1);
+        }
+
     }
 
     /**
