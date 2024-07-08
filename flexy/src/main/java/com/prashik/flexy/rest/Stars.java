@@ -9,7 +9,11 @@ import io.helidon.webserver.http.HttpRules;
 import io.helidon.webserver.http.HttpService;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
-import jakarta.json.*;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonBuilderFactory;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
 import org.apache.logging.log4j.Logger;
 
 import java.nio.file.Path;
@@ -66,9 +70,9 @@ public class Stars implements HttpService {
     @Override
     public void routing(HttpRules rules) {
         logger.info("Setting up routes for stars API.");
-        rules.get("/", this::getDefaultMessageHandler)
-                .get("/{name}", this::getStarMovies)
-                .get("/{name}/random", this::getStarRandomMovies)
+        rules.get("/list", this::getDefaultMessageHandler)
+                .get("/info/{name}", this::getStarMovies)
+                .get("/random/{name}", this::getStarRandomMovies)
                 .get("/random", this::getRandomStarsAndMovies);
     }
 
@@ -81,7 +85,7 @@ public class Stars implements HttpService {
     public void getStarMovies(ServerRequest serverRequest,
                                       ServerResponse serverResponse) {
         String name = serverRequest.path().pathParameters().get("name");
-        logger.info("/api/v1/stars/{} API accessed.", name);
+        logger.info("/api/v1/stars/info/{name} API accessed.");
         Star star = Utils.getStarFromName(name, allStars);
         if(star == null) {
             logger.info("Null response received when searching from name. Checking if id is provided.");
@@ -95,11 +99,7 @@ public class Stars implements HttpService {
         JsonArrayBuilder jsonArrayBuilder = JSON.createArrayBuilder();
 
         for(Movie movie: star.getMovies()) {
-            JsonObject json = JSON.createObjectBuilder()
-                    .add("name", movie.getName())
-                    .add("id", movie.getId())
-                    .add("location", movie.getLocation())
-                    .build();
+            JsonObject json = createJsonMovieObject(movie);
             jsonArrayBuilder.add(json);
         }
 
@@ -120,7 +120,7 @@ public class Stars implements HttpService {
     public void getStarRandomMovies(ServerRequest serverRequest,
                                             ServerResponse serverResponse) {
         String name = serverRequest.path().pathParameters().get("name");
-        logger.info("/api/v1/stars/{}/random API accessed.", name);
+        logger.info("/api/v1/stars/random/{name} API accessed.");
         Star star = Utils.getStarFromName(name, allStars);
         if(star == null) {
             logger.info("Null response received when searching from name. Checking if id is provided.");
@@ -134,22 +134,14 @@ public class Stars implements HttpService {
         JsonArrayBuilder jsonArrayBuilder = JSON.createArrayBuilder();
         if(star.getMovies().size() < 5) {
             for(Movie movie: star.getMovies()) {
-                JsonObject json = JSON.createObjectBuilder()
-                        .add("name", movie.getName())
-                        .add("id", movie.getId())
-                        .add("location", movie.getLocation())
-                        .build();
+                JsonObject json = createJsonMovieObject(movie);
                 jsonArrayBuilder.add(json);
             }
         } else {
             Set<Integer> randomIndices = Utils.getRandomIndices(star.getMovies().size(), 5);
             for(Integer index: randomIndices) {
                 Movie movie = star.getMovies().get(index);
-                JsonObject json = JSON.createObjectBuilder()
-                        .add("name", movie.getName())
-                        .add("id", movie.getId())
-                        .add("location", movie.getLocation())
-                        .build();
+                JsonObject json = createJsonMovieObject(movie);
                 jsonArrayBuilder.add(json);
             }
         }
@@ -169,7 +161,47 @@ public class Stars implements HttpService {
      */
     public void getRandomStarsAndMovies(ServerRequest serverRequest,
                                         ServerResponse serverResponse) {
+        logger.info("/api/v1/stars/random API accessed.");
 
+        // get random stars
+        Set<Integer> randomStarsIndex = Utils.getRandomIndices(allStars.size(), 5);
+
+        JsonObjectBuilder jsonObjectBuilder = createOkJsonResponse();
+
+        JsonArrayBuilder jsonArrayBuilder = JSON.createArrayBuilder();
+        for(Integer starIndex: randomStarsIndex) {
+            Star star = allStars.get(starIndex);
+
+            JsonArrayBuilder jsonArrayBuilderMovies = JSON.createArrayBuilder();
+            if(star.getMovies().size() < 5) {
+                for(Movie movie: star.getMovies()) {
+                    JsonObject movieJson = createJsonMovieObject(movie);
+                    jsonArrayBuilderMovies.add(movieJson);
+                }
+            } else {
+                Set<Integer> randomMoviesInteger = Utils.getRandomIndices(star.getMovies().size(), 5);
+                for(Integer movieIndex: randomMoviesInteger) {
+                    JsonObject movieJson = createJsonMovieObject(star.getMovies().get(movieIndex));
+                    jsonArrayBuilderMovies.add(movieJson);
+                }
+            }
+
+            JsonArray moviesJson = jsonArrayBuilderMovies.build();
+
+            JsonObject json = JSON.createObjectBuilder()
+                    .add("name", star.getName())
+                    .add("id", star.getId())
+                    .add("movies", moviesJson)
+                    .build();
+
+            jsonArrayBuilder.add(json);
+        }
+
+        JsonArray jsonArray = jsonArrayBuilder.build();
+        jsonObjectBuilder.add("data", jsonArray);
+
+        JsonObject returnObject = jsonObjectBuilder.build();
+        sendOKResponse(serverResponse, returnObject);
     }
 
     /**
@@ -181,7 +213,7 @@ public class Stars implements HttpService {
     private void getDefaultMessageHandler(ServerRequest serverRequest,
                                           ServerResponse serverResponse) {
 
-        logger.info("/api/v1/stars API accessed.");
+        logger.info("/api/v1/list API accessed.");
 
         JsonObjectBuilder jsonObjectBuilder = createOkJsonResponse();
 
@@ -260,5 +292,19 @@ public class Stars implements HttpService {
         if(star.getMovies() == null) {
             sendNotFoundResponse(serverResponse);
         }
+    }
+
+    /**
+     * Function to create a JSON of Movie Object
+     *
+     * @param movie the movie object.
+     * @return the Json of the Movie object.
+     */
+    private JsonObject createJsonMovieObject(Movie movie) {
+        return JSON.createObjectBuilder()
+                .add("name", movie.getName())
+                .add("id", movie.getId())
+                .add("location", movie.getLocation())
+                .build();
     }
 }
