@@ -9,6 +9,10 @@ import org.apache.logging.log4j.Logger;
 
 import java.nio.file.NoSuchFileException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 
 /**
  * The Main Application class
@@ -60,6 +64,6 @@ public class Main {
      */
     private static void routing(HttpRouting.Builder routing) {
         logger.info("Registering application routes");
-        routing.register("/stars", new Stars(Config.global()));
+        routing.register("/api/v1/stars", new Stars(Config.global()));
     }
 }

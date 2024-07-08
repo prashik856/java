@@ -16,8 +16,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 
 /**
  * Helper class which contains common utility functions
@@ -153,5 +152,56 @@ public class Utils {
             stars.add(new Star(subDirectory, allStarMovies));
         }
         return stars;
+    }
+
+    /**
+     * Utility function to return Star object when star name is provided.
+     *
+     * @param name the name of the star.
+     * @return the Star object.
+     */
+    public static Star getStarFromName(String name, ArrayList<Star> stars) {
+        Star tempStar = null;
+        for (Star star : stars) {
+            if (star.getName().equals(name)) {
+                tempStar = star;
+                break;
+            }
+        }
+        return tempStar;
+    }
+
+    /**
+     * Utility function to return Star object when id is provided.
+     *
+     * @param id The id of the Star object.
+     * @return the Star object.
+     */
+    public static Star getStarFromId(String id, ArrayList<Star> stars) {
+        Star tempStar = null;
+        for (Star star : stars) {
+            if (star.getId().equals(id)) {
+                tempStar = star;
+                break;
+            }
+        }
+        return tempStar;
+    }
+
+    /**
+     * Utility Function to generate random indices of an array.
+     *
+     * @param arrayLength the maximum length of the array.
+     * @param maxSize the maximum size of the se
+     * @return the set created.
+     */
+    public static Set<Integer> getRandomIndices(int arrayLength, int maxSize) {
+        Random random = new Random();
+        Set<Integer> randomInts = new HashSet<>();
+        while(randomInts.size() != maxSize) {
+            int i = random.ints(0, arrayLength).findFirst().getAsInt();
+            randomInts.add(i);
+        }
+        return randomInts;
     }
 }
