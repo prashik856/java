@@ -19,11 +19,21 @@ public class Main {
         Admin admin = ClusterUtilities.createAdminClient(kafkaServer);
 
         // describe cluster
+        System.out.println("Describe kafka cluster: ");
         ClusterUtilities.describeCluster(admin);
 
         // get all topics
+        System.out.println("Create topic " + topicName);
         Topic topic = TopicUtilities.createTopic(admin, topicName, partitions, replicationFactor);
 
+        System.out.println("Describe topic " + topicName);
         TopicUtilities.describeTopic(topic);
+
+        // delete this topic
+        System.out.println("Deleting Topic " + topicName);
+        Topic topic1 = TopicUtilities.deleteTopic(admin, topicName);
+        if(topic1 != null) {
+            TopicUtilities.describeTopic(topic1);
+        }
     }
 }

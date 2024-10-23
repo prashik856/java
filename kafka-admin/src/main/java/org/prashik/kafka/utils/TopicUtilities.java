@@ -1,5 +1,6 @@
 package org.prashik.kafka.utils;
 
+
 import org.apache.kafka.clients.admin.*;
 import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.TopicPartitionInfo;
@@ -11,11 +12,11 @@ import java.util.*;
 
 public class TopicUtilities {
     public static Topic createTopic(Admin admin, String topicName, int partitions,
-                                                 short replicationFactor) {
+                                    short replicationFactor) {
         Topic topic = getTopicInformation(admin, topicName);
         if(topic == null) {
             // create topic now
-            CreateTopicsResult result = null;
+            CreateTopicsResult result;
             try {
                 result = admin.createTopics(
                         Collections.singleton(
@@ -39,6 +40,23 @@ public class TopicUtilities {
         } else {
             System.out.println("Topic " + topicName + " already exists. Skipping topic creation.\n");
         }
+        return topic;
+    }
+
+    public static Topic deleteTopic(Admin admin, String topicName) {
+        Collection<String> topics = new ArrayList<>();
+        topics.add(topicName);
+        try {
+            DeleteTopicsResult deleteTopicsResult = admin.deleteTopics(topics);
+            deleteTopicsResult.all().get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Exception occurred while deleting topic " + topicName + ".");
+            System.exit(1);
+        }
+
+        Topic topic = getTopicInformation(admin, topicName);
+
         return topic;
     }
 
