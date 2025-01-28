@@ -58,7 +58,6 @@ public class Stars implements HttpService {
             e.printStackTrace();
             System.exit(1);
         }
-
     }
 
     /**
@@ -73,7 +72,30 @@ public class Stars implements HttpService {
         rules.get("/list", this::getDefaultMessageHandler)
                 .get("/info/{name}", this::getStarMovies)
                 .get("/random/{name}", this::getStarRandomMovies)
-                .get("/random", this::getRandomStarsAndMovies);
+                .get("/random", this::getRandomStarsAndMovies)
+                .get("/version", this::getStarsAPIVersion);
+    }
+
+    /**
+     * Function to return the current API version of the stars API
+     *
+     * @param serverRequest The input server request.
+     * @param serverResponse the input server response.
+     */
+    public void getStarsAPIVersion(ServerRequest serverRequest, ServerResponse serverResponse) {
+        logger.info("/api/v1/stars/version API accessed");
+
+        JsonObjectBuilder jsonObjectBuilder = createOkJsonResponse();
+
+        JsonObject dataObject = JSON.createObjectBuilder()
+                .add("version", "1.0.0")
+                .build();
+
+        jsonObjectBuilder.add("data", dataObject);
+
+        JsonObject returnObject = jsonObjectBuilder.build();
+        serverResponse.status(Status.OK_200);
+        sendOKResponse(serverResponse, returnObject);
     }
 
     /**
