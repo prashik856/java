@@ -1,6 +1,7 @@
 package com.prashik.splitvise.model;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 public class AllCustomers {
@@ -8,7 +9,8 @@ public class AllCustomers {
     private HashMap<String, Person> emailMapping;
 
     public AllCustomers() {
-
+        this.allCustomers = new HashSet<>();
+        this.emailMapping = new HashMap<>();
     }
 
     public AllCustomers(Set<Person> allCustomers) {

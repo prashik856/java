@@ -1,5 +1,6 @@
 package com.prashik.splitvise.utils;
 
+import com.prashik.splitvise.model.Group;
 import io.helidon.config.Config;
 import io.helidon.http.Status;
 import io.helidon.webserver.http.ServerResponse;
@@ -12,10 +13,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Helper class which contains common utility functions
@@ -108,5 +109,54 @@ public class Utils {
         }
 
         return connection;
+    }
+
+    public static Set<String> getGroupSet(String groupSetString) {
+        Set<String> groupSet = new HashSet<>();
+
+        String[] splitString = groupSetString.split(",");
+        Collections.addAll(groupSet, splitString);
+
+        return groupSet;
+    }
+
+    public static ResultSet executeQuery(Connection connection,
+                                   Statement statement,
+                                   ResultSet resultSet,
+                                   String query) {
+        try {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(query);
+        } catch (SQLException ex) {
+            logger.info("Could not execute query : {}", query);
+            Utils.printSqlExceptions(ex);
+        }
+        return resultSet;
+    }
+
+    public static ResultSet cleanup(ResultSet resultSet) {
+        if(resultSet != null) {
+            try {
+                resultSet.close();
+            } catch (SQLException ex) {
+                logger.info("Exception happened when closing resultSet.");
+                Utils.printSqlExceptions(ex);
+            }
+            resultSet = null;
+        }
+        return resultSet;
+    }
+
+    public static Statement cleanup(Statement statement) {
+        if(statement != null) {
+            try {
+                statement.close();
+            } catch (SQLException ex) {
+                logger.info("Exception happened when closing statement.");
+                Utils.printSqlExceptions(ex);
+            }
+            statement = null;
+        }
+        return statement;
     }
 }

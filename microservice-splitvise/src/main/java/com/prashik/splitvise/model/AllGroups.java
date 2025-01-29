@@ -1,6 +1,7 @@
 package com.prashik.splitvise.model;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 public class AllGroups {
@@ -8,7 +9,8 @@ public class AllGroups {
     private HashMap<String, Group> nameMapping;
 
     public AllGroups() {
-
+        this.allGroups = new HashSet<>();
+        this.nameMapping = new HashMap<>();
     }
 
     public AllGroups(Set<Group> allGroups) {

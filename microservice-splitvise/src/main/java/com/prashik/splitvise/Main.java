@@ -1,5 +1,6 @@
 package com.prashik.splitvise;
 
+import com.prashik.splitvise.dao.GroupsDAO;
 import com.prashik.splitvise.dao.PersonsDAO;
 import com.prashik.splitvise.model.AllCustomers;
 import com.prashik.splitvise.model.AllGroups;
@@ -21,10 +22,6 @@ import java.sql.*;
  */
 public class Main {
     private static final Logger logger = Utils.getLogger(Main.class.getName());
-    private AllCustomers allCustomers;
-    private AllGroups allGroups;
-    private AllTransactions allTransactions;
-    private static final PersonsDAO personsDAO = new PersonsDAO();
 
     /**
      * Private constructor so class cannot be instantiated.
@@ -49,8 +46,12 @@ public class Main {
         logger.info("Getting database connection");
         Connection connection = Utils.getDatabaseConnection(config);
 
-        logger.info("Reading database to collect stored data.");
-        personsDAO.getAllCustomers(connection);
+        logger.info("Reading database to collect all persons.");
+        AllCustomers allCustomers = new PersonsDAO().getAllCustomers(connection);
+
+        logger.info("Reading database to collect all groups.");
+        AllGroups allGroups = new GroupsDAO().getAllGroups(connection);
+        AllTransactions allTransactions = null;
 
         logger.info("Starting web server");
         System.exit(0);

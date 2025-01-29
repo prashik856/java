@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public class Group {
-    private String id;
+    private int id;
     // Group name needs to be unique
     private String name;
     private String createdByEmail;
@@ -17,18 +17,17 @@ public class Group {
 
     }
 
-    public Group(Long id, String name, String createdByEmail) {
-        this.id = UUID.randomUUID().toString();
+    public Group(String name, String createdByEmail) {
         this.name = name;
         this.createdByEmail = createdByEmail;
         this.creationTime = new Timestamp(System.currentTimeMillis());
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

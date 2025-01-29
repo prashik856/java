@@ -3,7 +3,6 @@ package com.prashik.splitvise.model;
 import java.util.Objects;
 import java.util.Set;
 import java.sql.Timestamp;
-import java.util.UUID;
 
 /**
  * Class to store Person Object.
@@ -12,7 +11,7 @@ import java.util.UUID;
  */
 public class Person {
     // All of these values cannot be null
-    private String id;
+    private int id;
     private Long phoneNumber;
     private String emailId;
     private String name;
@@ -24,18 +23,17 @@ public class Person {
     }
 
     public Person(Long phoneNumber, String emailId, String name) {
-        this.id = UUID.randomUUID().toString();
         this.phoneNumber = phoneNumber;
         this.emailId = emailId;
         this.name = name;
         this.creationTime = new Timestamp(System.currentTimeMillis());
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

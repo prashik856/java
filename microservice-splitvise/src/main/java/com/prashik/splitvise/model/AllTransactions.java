@@ -12,7 +12,9 @@ public class AllTransactions {
     private HashMap<String, Set<Transaction>> nameTransactions;
 
     public AllTransactions() {
-
+        this.allTransactions = new HashSet<>();
+        this.emailTransactions = new HashMap<>();
+        this.nameTransactions = new HashMap<>();
     }
 
     private boolean isPresent(Set<Transaction> transactionSet, Transaction transaction) {
