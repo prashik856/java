@@ -1,5 +1,6 @@
 package com.prashik.splitvise;
 
+import com.prashik.splitvise.dao.PersonsDAO;
 import com.prashik.splitvise.model.AllCustomers;
 import com.prashik.splitvise.model.AllGroups;
 import com.prashik.splitvise.model.AllTransactions;
@@ -11,9 +12,7 @@ import io.helidon.webserver.WebServer;
 import io.helidon.webserver.http.HttpRouting;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 /**
  * The Main Application class
@@ -25,6 +24,7 @@ public class Main {
     private AllCustomers allCustomers;
     private AllGroups allGroups;
     private AllTransactions allTransactions;
+    private static final PersonsDAO personsDAO = new PersonsDAO();
 
     /**
      * Private constructor so class cannot be instantiated.
@@ -46,27 +46,11 @@ public class Main {
         Config config = Config.create();
         Config.global(config);
 
-        String databaseUrl = config.get("database.url").asString().get();
-        String databaseUser = config.get("database.user").asString().get();
-        String databasePassword = config.get("database.password").asString().get();
-        String jdbcUrl = databaseUrl + "?"
-                + "user=" + databaseUser
-                + "&password=" + databasePassword;
-        logger.info("Database Url: {}", databaseUrl);
-        logger.info("Database User: {}", databaseUser);
-        logger.info("Database Password: {}", databasePassword);
+        logger.info("Getting database connection");
+        Connection connection = Utils.getDatabaseConnection(config);
 
         logger.info("Reading database to collect stored data.");
-        // calls to database to initialize allCustomers, allGroups and allTransactions
-        Connection connection = null;
-        try {
-            connection = DriverManager.getConnection(jdbcUrl);
-        } catch (SQLException ex) {
-            logger.info("Count not get an instance of JDBC Driver.");
-            logger.info("SQL Exception: {}", ex.getMessage());
-            logger.info("SQL State: {}", ex.getSQLState());
-            logger.info("Vendor Error: {}", ex.getErrorCode());
-        }
+        personsDAO.getAllCustomers(connection);
 
         logger.info("Starting web server");
         System.exit(0);
