@@ -22,6 +22,9 @@ import java.sql.*;
  */
 public class Main {
     private static final Logger logger = Utils.getLogger(Main.class.getName());
+    private static AllCustomers allCustomers = null;
+    private static AllGroups allGroups = null;
+    private static AllTransactions allTransactions = null;
 
     /**
      * Private constructor so class cannot be instantiated.
@@ -47,11 +50,10 @@ public class Main {
         Connection connection = Utils.getDatabaseConnection(config);
 
         logger.info("Reading database to collect all persons.");
-        AllCustomers allCustomers = new PersonsDAO().getAllCustomers(connection);
+        allCustomers = new PersonsDAO().getAllCustomers(connection);
 
         logger.info("Reading database to collect all groups.");
-        AllGroups allGroups = new GroupsDAO().getAllGroups(connection);
-        AllTransactions allTransactions = null;
+        allGroups = new GroupsDAO().getAllGroups(connection);
 
         logger.info("Starting web server");
         System.exit(0);
@@ -76,6 +78,6 @@ public class Main {
     private static void routing(HttpRouting.Builder routing) {
         logger.info("Registering application routes");
         routing.register("/api/v1/details", new Details(Config.global()))
-                .register("/api/v1/person", new Persons(Config.global()));
+                .register("/api/v1/person", new Persons(Config.global(), allCustomers));
     }
 }
