@@ -8,12 +8,21 @@ public class AllCustomers {
     private Set<Person> allCustomers;
     private HashMap<String, Person> emailMapping;
 
-    public AllCustomers() {
+    private static AllCustomers allCustomersObject = null;
+
+    private AllCustomers() {
         this.allCustomers = new HashSet<>();
         this.emailMapping = new HashMap<>();
     }
 
-    public AllCustomers(Set<Person> allCustomers) {
+    private AllCustomers getAllCustomersObject() {
+        if(AllCustomers.allCustomersObject == null) {
+            allCustomersObject = new AllCustomers();
+        }
+        return allCustomersObject;
+    }
+
+    private AllCustomers(Set<Person> allCustomers) {
         this.allCustomers = allCustomers;
         this.emailMapping = new HashMap<>();
         for(Person person: allCustomers) {
