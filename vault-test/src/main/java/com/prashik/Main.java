@@ -19,6 +19,8 @@ import com.oracle.bmc.vault.responses.ListSecretsResponse;
 import com.oracle.bmc.vault.responses.ScheduleSecretDeletionResponse;
 import io.helidon.common.Base64Value;
 import io.helidon.config.Config;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,8 +35,32 @@ import static io.helidon.config.ConfigSources.file;
 
 public class Main {
     public static void main(String[] args){
+        String log4j2Dir = "/Users/prraut/Documents/Github/java/vault-test";
+        Path configsDir2 = Paths.get(log4j2Dir);
+
+        // Load the log4j config file and initialize the logger
+        final String log4j2File = configsDir2.resolve("log4j2.yaml").toFile().getAbsolutePath();
+        System.getProperties().put("log4j.configurationFile", log4j2File);
+        final Logger logger = LoggerFactory.getLogger(Main.class);
+
+        logger.info("Successfully configured logging.");
+
+        logger.info("Reading config secrets");
+        Path configsDirSecrets = Paths
+                .get("/Users/prraut/Documents/OCI/multi-tenant-infrastructure/libraries/job-db-migrator");
+        final String secretsFile = configsDirSecrets.resolve("secrets.yaml").toFile().getAbsolutePath();
+        Config config2 = Config.builder()
+                .sources(file(secretsFile))
+                .build();
+
+         logger.info("DB User: {}", config2.get("oci").get("databaseUser").asString().get());
+         logger.info("DB URL: {}", config2.get("oci.databasePassword").asString().get());
+         logger.info("DB Password: {}", config2.get("oci.databaseUrl").asString().get());
+        System.exit(0);
+
         /* Create a service client */
         try {
+
             // get config directory
             Path configsDir = Paths.get("/Users/prraut/Documents/Github/java/vault-test");
             final String baseConfigFile = configsDir.resolve("base-config.yaml").toFile().getAbsolutePath();

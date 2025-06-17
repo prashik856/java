@@ -19,6 +19,7 @@ dependencies {
     implementation("com.oracle.oci.sdk:oci-java-sdk-common-httpclient-jersey:3.52.0")
     implementation("io.helidon.common:helidon-common-media-type:3.2.12")
     implementation("io.helidon.config:helidon-config-yaml:3.2.12")
+    implementation("org.slf4j:slf4j-simple:2.0.17")
 }
 
 tasks.test {
